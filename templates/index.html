@@ -49,6 +49,36 @@
             margin-bottom: 30px;
         }
         
+        .stats-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .stats-box {
+            display: inline-block;
+            background: linear-gradient(135deg, #4C1D95 0%, #5B21B6 50%, #6D28D9 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            margin: 0 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+        
+        .stats-number {
+            font-size: 2rem;
+            font-weight: bold;
+            display: block;
+        }
+        
+        .stats-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
         .search-box {
             display: flex;
             gap: 15px;
@@ -82,6 +112,47 @@
         
         .search-btn:hover {
             transform: translateY(-2px);
+        }
+        
+        .sort-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .sort-label {
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .sort-select {
+            padding: 8px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+        }
+        
+        .sort-select:focus {
+            outline: none;
+            border-color: #4C1D95;
+        }
+        
+        .refresh-btn {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #4C1D95 0%, #5B21B6 50%, #6D28D9 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .refresh-btn:hover {
+            transform: translateY(-1px);
         }
         
         .filters {
@@ -214,6 +285,16 @@
             .filters {
                 justify-content: center;
             }
+            
+            .sort-controls {
+                flex-direction: column;
+                gap: 10px;
+                align-items: stretch;
+            }
+            
+            .sort-controls .sort-label {
+                text-align: center;
+            }
         }
     </style>
 </head>
@@ -230,6 +311,22 @@
                 <button onclick="searchBooks()" class="search-btn">Search</button>
             </div>
             
+            <div class="sort-controls">
+                <span class="sort-label">Sort by:</span>
+                <select id="sortSelect" class="sort-select">
+                    <option value="relevance">Relevance</option>
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                    <option value="rating_high">Highest Rated</option>
+                    <option value="rating_low">Lowest Rated</option>
+                    <option value="pages_high">Most Pages</option>
+                    <option value="pages_low">Least Pages</option>
+                    <option value="title_az">Title A-Z</option>
+                    <option value="title_za">Title Z-A</option>
+                </select>
+                <button onclick="refreshResults()" class="refresh-btn">🔄 Refresh</button>
+            </div>
+            
             <div class="filters">
                 <select id="categoryFilter" class="filter-select">
                     <option value="">All Categories</option>
@@ -243,6 +340,17 @@
                     <option value="medium">Medium</option>
                     <option value="hard">Hard</option>
                 </select>
+            </div>
+        </div>
+        
+        <div class="stats-container">
+            <div class="stats-box">
+                <span class="stats-number" id="totalBooks">5,197</span>
+                <span class="stats-label">Total Books</span>
+            </div>
+            <div class="stats-box">
+                <span class="stats-number" id="matchingBooks">5,197</span>
+                <span class="stats-label">Matching Criteria</span>
             </div>
         </div>
         
@@ -283,17 +391,105 @@
             }
         }
         
+        // Refresh and sort results
+        function refreshResults() {
+            const sortBy = document.getElementById('sortSelect').value;
+            const query = document.getElementById('searchInput').value.trim();
+            const category = document.getElementById('categoryFilter').value;
+            const emotion = document.getElementById('emotionFilter').value;
+            const difficulty = document.getElementById('difficultyFilter').value;
+            
+            document.getElementById('results').innerHTML = '<div class="loading">Refreshing results...</div>';
+            
+            // Get current results and sort them
+            fetch('/api/search', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    query: query,
+                    limit: 100, // Get more results for better sorting
+                    category: category || 'All Categories',
+                    emotion: emotion || 'All Emotions',
+                    difficulty: difficulty || 'All'
+                })
+            })
+            .then(response => response.json())
+            .then(books => {
+                const sortedBooks = sortBooks(books, sortBy);
+                displayBooks(sortedBooks.slice(0, 20), category, emotion, difficulty); // Show top 20
+            })
+            .catch(error => {
+                console.error('Refresh error:', error);
+                document.getElementById('results').innerHTML = '<div class="no-results">Error refreshing results</div>';
+            });
+        }
+        
+        // Sort books based on criteria
+        function sortBooks(books, sortBy) {
+            const sortedBooks = [...books];
+            
+            switch(sortBy) {
+                case 'newest':
+                    return sortedBooks.sort((a, b) => (b.published_year || 0) - (a.published_year || 0));
+                case 'oldest':
+                    return sortedBooks.sort((a, b) => (a.published_year || 9999) - (b.published_year || 9999));
+                case 'rating_high':
+                    return sortedBooks.sort((a, b) => (b.average_rating || 0) - (a.average_rating || 0));
+                case 'rating_low':
+                    return sortedBooks.sort((a, b) => (a.average_rating || 0) - (b.average_rating || 0));
+                case 'pages_high':
+                    return sortedBooks.sort((a, b) => (b.num_pages || 0) - (a.num_pages || 0));
+                case 'pages_low':
+                    return sortedBooks.sort((a, b) => (a.num_pages || 0) - (b.num_pages || 0));
+                case 'title_az':
+                    return sortedBooks.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
+                case 'title_za':
+                    return sortedBooks.sort((a, b) => (b.title || '').localeCompare(a.title || ''));
+                case 'relevance':
+                default:
+                    return sortedBooks.sort((a, b) => (b.similarity_score || 0) - (a.similarity_score || 0));
+            }
+        }
+        
+        // Update stats
+        async function updateStats() {
+            const query = document.getElementById('searchInput').value.trim();
+            const category = document.getElementById('categoryFilter').value;
+            const emotion = document.getElementById('emotionFilter').value;
+            const difficulty = document.getElementById('difficultyFilter').value;
+            
+            try {
+                const response = await fetch('/api/stats', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        query: query,
+                        category: category || 'All Categories',
+                        emotion: emotion || 'All Emotions',
+                        difficulty: difficulty || 'All'
+                    })
+                });
+                
+                if (response.ok) {
+                    const stats = await response.json();
+                    document.getElementById('totalBooks').textContent = stats.total_books.toLocaleString();
+                    document.getElementById('matchingBooks').textContent = stats.matching_criteria.toLocaleString();
+                }
+            } catch (error) {
+                console.error('Error updating stats:', error);
+            }
+        }
+        
         // Search books
         async function searchBooks() {
             const query = document.getElementById('searchInput').value.trim();
             const category = document.getElementById('categoryFilter').value;
             const emotion = document.getElementById('emotionFilter').value;
             const difficulty = document.getElementById('difficultyFilter').value;
-            
-            if (!query) {
-                alert('Please enter a search query');
-                return;
-            }
             
             document.getElementById('results').innerHTML = '<div class="loading">Searching for books...</div>';
             
@@ -305,7 +501,10 @@
                     },
                     body: JSON.stringify({
                         query: query,
-                        limit: 20
+                        limit: 20,
+                        category: category || 'All Categories',
+                        emotion: emotion || 'All Emotions',
+                        difficulty: difficulty || 'All'
                     })
                 });
                 
@@ -326,25 +525,9 @@
                 return;
             }
             
-            // Filter books
-            let filteredBooks = books;
-            if (categoryFilter) {
-                filteredBooks = filteredBooks.filter(book => book.simple_categories === categoryFilter);
-            }
-            if (emotionFilter) {
-                filteredBooks = filteredBooks.filter(book => book.dominant_emotion === emotionFilter);
-            }
-            if (difficultyFilter) {
-                filteredBooks = filteredBooks.filter(book => book.reading_difficulty === difficultyFilter);
-            }
-            
-            if (filteredBooks.length === 0) {
-                resultsDiv.innerHTML = '<div class="no-results">No books found matching your filters</div>';
-                return;
-            }
-            
+            // Backend has already filtered the books, so just display them
             let html = '';
-            filteredBooks.forEach(book => {
+            books.forEach(book => {
                 html += `
                     <div class="book-card">
                         <img src="${book.thumbnail || 'https://via.placeholder.com/120x180/4C1D95/FFFFFF?text=Cover+Not+Found'}" 
@@ -352,30 +535,30 @@
                         <div class="book-info">
                             <div class="book-title">${book.title}</div>
                             <div class="book-authors">by ${book.authors}</div>
-                            <div class="book-description">${book.description.substring(0, 200)}...</div>
+                            <div class="book-description">${(book.description || 'No description available').substring(0, 200)}...</div>
                             <div class="book-meta">
                                 <div class="meta-item">
                                     <span>⭐</span>
-                                    <span>${book.average_rating.toFixed(1)}</span>
+                                    <span>${(book.average_rating || 0).toFixed(1)}</span>
                                 </div>
                                 <div class="meta-item">
                                     <span>📖</span>
-                                    <span>${book.num_pages} pages</span>
+                                    <span>${book.num_pages || 0} pages</span>
                                 </div>
                                 <div class="meta-item">
                                     <span>📅</span>
-                                    <span>${book.published_year}</span>
+                                    <span>${book.published_year || 'Unknown'}</span>
                                 </div>
                                 <div class="meta-item">
                                     <span>📚</span>
-                                    <span>${book.simple_categories}</span>
+                                    <span>${book.categories || 'Unknown'}</span>
                                 </div>
                                 <div class="meta-item">
                                     <span>📊</span>
-                                    <span>${book.reading_difficulty}</span>
+                                    <span>${book.reading_difficulty || 'Unknown'}</span>
                                 </div>
-                                <div class="emotion-tag emotion-${book.dominant_emotion}">
-                                    ${book.dominant_emotion}
+                                <div class="emotion-tag emotion-${book.dominant_emotion || 'neutral'}">
+                                    ${book.dominant_emotion || 'neutral'}
                                 </div>
                             </div>
                         </div>
@@ -393,8 +576,37 @@
             }
         });
         
+        // Update stats when search input changes
+        document.getElementById('searchInput').addEventListener('input', function() {
+            updateStats();
+        });
+        
+        // Refresh results when sort option changes
+        document.getElementById('sortSelect').addEventListener('change', function() {
+            refreshResults();
+        });
+        
+        // Update stats when filters change
+        document.getElementById('categoryFilter').addEventListener('change', function() {
+            updateStats();
+            searchBooks(); // Also search with new filters
+        });
+        
+        document.getElementById('emotionFilter').addEventListener('change', function() {
+            updateStats();
+            searchBooks(); // Also search with new filters
+        });
+        
+        document.getElementById('difficultyFilter').addEventListener('change', function() {
+            updateStats();
+            searchBooks(); // Also search with new filters
+        });
+        
         // Load filters on page load
         loadFilters();
+        
+        // Update stats on page load
+        updateStats();
     </script>
 </body>
 </html>
