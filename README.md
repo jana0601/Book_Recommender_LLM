@@ -97,35 +97,6 @@ The Flask-based web application provides a modern, intuitive interface for disco
 
 ### Interface Overview
 
-#### Homepage Layout
-```
-┌─────────────────────────────────────────────────────────┐
-│                    Book Recommender                      │
-│     Discover books with AI-powered emotion analysis     │
-├─────────────────────────────────────────────────────────┤
-│  [Search Input Field]              [Search Button]      │
-│                                                         │
-│  Filters: [All Categories ▼] [All Emotions ▼] [All ▼]  │
-├─────────────────────────────────────────────────────────┤
-│                                                         │
-│  ┌─────────────────────────────────────────────────┐    │
-│  │ [Book Cover] │ Book Title                      │    │
-│  │              │ by Author Name                  │    │
-│  │              │ Book description...            │    │
-│  │              │ Rating: 4.5 Pages: 300 Year: 2020│    │
-│  │              │ Fiction Easy [joy]              │    │
-│  └─────────────────────────────────────────────────┘    │
-│                                                         │
-│  ┌─────────────────────────────────────────────────┐    │
-│  │ [Book Cover] │ Another Book Title              │    │
-│  │              │ by Another Author                │    │
-│  │              │ Another description...          │    │
-│  │              │ Rating: 4.2 Pages: 250 Year: 2019│    │
-│  │              │ Nonfiction Medium [sad]         │    │
-│  └─────────────────────────────────────────────────┘    │
-│                                                         │
-└─────────────────────────────────────────────────────────┘
-```
 
 #### Search Interface
 - **Search Bar**: Natural language queries (e.g., "books about children", "mystery novels")
@@ -133,10 +104,6 @@ The Flask-based web application provides a modern, intuitive interface for disco
 - **Smart Matching**: Finds books by title, author, description, and categories
 
 #### Filter System
-- **Category Filter**: 
-  - Fiction
-  - Nonfiction
-  - All Categories
 - **Emotion Filter**:
   - Joy (happy, uplifting books)
   - Sadness (emotional, touching stories)
