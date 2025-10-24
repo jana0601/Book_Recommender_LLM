@@ -2,7 +2,9 @@
 
 A modern web application that provides intelligent book recommendations using semantic search, emotion analysis, and text classification powered by Large Language Models (LLMs).
 
-## 🌟 Features
+> **Note**: This repository builds on the ideas from the [llm-semantic-book-recommender](https://github.com/t-redactyl/llm-semantic-book-recommender) project.
+
+## Features
 
 - **Semantic Search**: Find books using natural language queries (e.g., "books about children learning")
 - **Emotion Analysis**: Discover books by emotional tone (joy, sadness, anger, fear, etc.)
@@ -11,7 +13,13 @@ A modern web application that provides intelligent book recommendations using se
 - **Modern Web Interface**: Beautiful dark purple-themed responsive design
 - **Comprehensive Data**: 5,000+ books with enhanced metadata
 
-## 🚀 Quick Start
+## Interface Preview
+
+![Book Recommender Interface](interface.jpg)
+
+*Modern dark purple-themed web interface with semantic search and emotion-based filtering*
+
+## Quick Start
 
 ### Prerequisites
 - Python 3.8 or higher
@@ -47,7 +55,7 @@ A modern web application that provides intelligent book recommendations using se
 
 5. **Open your browser** and visit: `http://localhost:5000`
 
-## 📊 Data Processing Pipeline
+## Data Processing Pipeline
 
 The project includes a comprehensive data processing pipeline that transforms raw book data into an enhanced dataset:
 
@@ -76,7 +84,7 @@ The project includes a comprehensive data processing pipeline that transforms ra
 - Popularity and recency indicators
 - Comprehensive metadata generation
 
-## 🎨 Web Interface
+## Web Interface
 
 The Flask-based web application provides a modern, intuitive interface for discovering books:
 
@@ -89,10 +97,10 @@ The Flask-based web application provides a modern, intuitive interface for disco
 
 ### Interface Overview
 
-#### 🏠 **Homepage Layout**
+#### Homepage Layout
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                    📚 Book Recommender                  │
+│                    Book Recommender                      │
 │     Discover books with AI-powered emotion analysis     │
 ├─────────────────────────────────────────────────────────┤
 │  [Search Input Field]              [Search Button]      │
@@ -104,27 +112,27 @@ The Flask-based web application provides a modern, intuitive interface for disco
 │  │ [Book Cover] │ Book Title                      │    │
 │  │              │ by Author Name                  │    │
 │  │              │ Book description...            │    │
-│  │              │ ⭐ 4.5 📖 300 pages 📅 2020    │    │
-│  │              │ 📚 Fiction 📊 Easy [joy]        │    │
+│  │              │ Rating: 4.5 Pages: 300 Year: 2020│    │
+│  │              │ Fiction Easy [joy]              │    │
 │  └─────────────────────────────────────────────────┘    │
 │                                                         │
 │  ┌─────────────────────────────────────────────────┐    │
 │  │ [Book Cover] │ Another Book Title              │    │
 │  │              │ by Another Author                │    │
 │  │              │ Another description...          │    │
-│  │              │ ⭐ 4.2 📖 250 pages 📅 2019      │    │
-│  │              │ 📚 Nonfiction 📊 Medium [sad]    │    │
+│  │              │ Rating: 4.2 Pages: 250 Year: 2019│    │
+│  │              │ Nonfiction Medium [sad]         │    │
 │  └─────────────────────────────────────────────────┘    │
 │                                                         │
 └─────────────────────────────────────────────────────────┘
 ```
 
-#### 🔍 **Search Interface**
+#### Search Interface
 - **Search Bar**: Natural language queries (e.g., "books about children", "mystery novels")
 - **Real-time Results**: Instant search results with relevance scoring
 - **Smart Matching**: Finds books by title, author, description, and categories
 
-#### 🎛️ **Filter System**
+#### Filter System
 - **Category Filter**: 
   - Fiction
   - Nonfiction
@@ -142,7 +150,7 @@ The Flask-based web application provides a modern, intuitive interface for disco
   - Medium (moderate complexity)
   - Hard (complex language, long books)
 
-#### 📚 **Book Cards Display**
+#### Book Cards Display
 Each book card shows:
 - **Cover Image**: Book thumbnail or default purple placeholder
 - **Title**: Full book title
@@ -156,14 +164,14 @@ Each book card shows:
   - 📊 Reading difficulty
   - [Emotion] Dominant emotional tone
 
-#### 🎨 **Visual Design**
+#### Visual Design
 - **Color Scheme**: Dark purple gradient background (#4C1D95 → #5B21B6 → #6D28D9)
 - **Typography**: Clean, modern fonts (Segoe UI)
 - **Layout**: Card-based design with hover effects
 - **Responsive**: Adapts to different screen sizes
 - **Accessibility**: High contrast colors and clear typography
 
-### 📱 **Mobile Experience**
+### Mobile Experience
 The interface is fully responsive and provides an optimal experience on:
 - Desktop computers (1200px+ width)
 - Tablets (768px-1199px width)
@@ -175,7 +183,7 @@ On mobile devices, the layout automatically adjusts:
 - Touch-friendly buttons and inputs
 - Optimized text sizing
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 book_recommender/
@@ -192,7 +200,7 @@ book_recommender/
 └── README.md                       # This file
 ```
 
-## 🔧 API Endpoints
+## API Endpoints
 
 The web application provides several REST API endpoints:
 
@@ -203,7 +211,7 @@ The web application provides several REST API endpoints:
 - `GET /api/recent` - Get recently published books
 - `GET /api/random` - Get random book recommendations
 
-## 🎯 Usage Examples
+## Usage Examples
 
 ### Search Queries
 - "books about children" - Find children's books
@@ -216,7 +224,7 @@ The web application provides several REST API endpoints:
 - **Emotions**: Joy, Sadness, Anger, Fear, Surprise, Disgust, Neutral
 - **Difficulty**: Easy, Medium, Hard
 
-## 🛠️ Technical Details
+## Technical Details
 
 ### Technologies Used
 - **Backend**: Flask (Python web framework)
@@ -232,7 +240,7 @@ The web application provides several REST API endpoints:
 - **Error Handling**: Robust error handling and fallback mechanisms
 - **Data Validation**: Comprehensive data quality checks
 
-## 📈 Data Statistics
+## Data Statistics
 
 - **Total Books**: 5,197 books with complete metadata
 - **Categories**: 4 main categories (Fiction, Nonfiction, etc.)
@@ -240,13 +248,9 @@ The web application provides several REST API endpoints:
 - **Languages**: Primarily English books
 - **Time Range**: Books from various publication years
 
-## 🤝 Contributing
+## Contributing
 
 This project is designed for educational purposes and demonstrates modern web application development with AI/ML integration. Feel free to explore the code and adapt it for your own projects.
-
-## 📄 License
-
-This project is open source and available under the MIT License.
 
 ---
 
