@@ -30,7 +30,7 @@ A modern web application that provides intelligent book recommendations using se
 1. **Clone the repository**:
    ```bash
    git clone <repository-url>
-   cd book_recommender
+   cd Book_Recommender_LLM
    ```
 
 2. **Install dependencies**:
